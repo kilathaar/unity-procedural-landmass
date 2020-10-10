@@ -418,15 +418,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aee5d4eb6c2e0074da3892f203ea3c51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  drawMode: 1
   mapWidth: 100
   mapHeight: 100
-  noiseScale: 2.57
-  octaves: 4
-  persistance: 0.966
+  noiseScale: 25.66
+  octaves: 2
+  persistance: 0.172
   lacunarity: 3.13
-  seed: 0
+  seed: 37
   offset: {x: 0, y: 0}
   autoUpdate: 1
+  regions:
+  - name: Water Deep
+    height: 0.3
+    colour: {r: 0, g: 0.0627451, b: 0.5019608, a: 0}
+  - name: Water Shallow
+    height: 0.4
+    colour: {r: 0, g: 0.2509804, b: 1, a: 0}
+  - name: Sand
+    height: 0.45
+    colour: {r: 1, g: 0.9451673, b: 0, a: 0}
+  - name: Grass
+    height: 0.55
+    colour: {r: 0.60026306, g: 1, b: 0.5019608, a: 0}
+  - name: Grass 2
+    height: 0.6
+    colour: {r: 0.14941373, g: 0.5849056, b: 0.041384827, a: 0}
+  - name: Rock
+    height: 0.7
+    colour: {r: 0.59607846, g: 0.30980393, b: 0.28235295, a: 0}
+  - name: Rock 2
+    height: 0.9
+    colour: {r: 0.3679245, g: 0.21701798, b: 0.18569775, a: 0}
+  - name: Snow
+    height: 1
+    colour: {r: 1, g: 1, b: 1, a: 0}
 --- !u!4 &1781616307
 Transform:
   m_ObjectHideFlags: 0
