@@ -10,7 +10,8 @@ public class MapGenerator : MonoBehaviour {
 
 	public Noise.NormalizeMode normalizeMode;
 
-	public const int mapChunkSize = 241;
+	// Var ursprungligen 241. Subtrahera 2 för att kompensera för "border" (episod 12)
+	public const int mapChunkSize = 239;
 	[Range(0, 6)]
 	public int editorLevelOfDetailPreview;
 	public float noiseScale;
@@ -104,7 +105,8 @@ public class MapGenerator : MonoBehaviour {
 	}
 
 	MapData GenerateMapData(Vector2 centre) {
-		float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, centre + offset, normalizeMode);
+		// +2 för att kompensera för "border" (episod 12)
+		float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize + 2, mapChunkSize + 2, seed, noiseScale, octaves, persistance, lacunarity, centre + offset, normalizeMode);
 
 		Color[] colourMap = new Color[mapChunkSize * mapChunkSize];
 
