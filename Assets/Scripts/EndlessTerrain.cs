@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class EndlessTerrain : MonoBehaviour {
 
-	const float scale = 1f;
+	const float scale = 2f;
 
 	const float viewerMoveThresholdForChunkUpdate = 25f;
 	const float squareViewerMoveThresholdForChunkUpdate = viewerMoveThresholdForChunkUpdate * viewerMoveThresholdForChunkUpdate;
@@ -73,9 +73,11 @@ public class EndlessTerrain : MonoBehaviour {
 
 		MeshRenderer meshRenderer;
 		MeshFilter meshFilter;
+		MeshCollider meshCollider;
 
 		LevelOfDetailInformation[] detailLevels;
 		LevelOfDetailMesh[] levelOfDetailMeshes;
+		LevelOfDetailMesh collisionLevelOfDetailMesh;
 
 		MapData mapData;
 		bool mapDataReceived;
@@ -90,8 +92,10 @@ public class EndlessTerrain : MonoBehaviour {
 
 			meshObject = new GameObject("Terrain Chunk");
 			meshRenderer = meshObject.AddComponent<MeshRenderer>();
+			meshCollider = meshObject.AddComponent<MeshCollider>();
 			meshFilter = meshObject.AddComponent<MeshFilter>();
 			meshRenderer.material = material;
+
 			meshObject.transform.position = positionV3 * scale;
 			meshObject.transform.parent = parent;
 			meshObject.transform.localScale = Vector3.one * scale;
@@ -100,6 +104,9 @@ public class EndlessTerrain : MonoBehaviour {
 			levelOfDetailMeshes = new LevelOfDetailMesh[detailLevels.Length];
 			for(int i = 0; i < detailLevels.Length; i++) {
 				levelOfDetailMeshes[i] = new LevelOfDetailMesh(detailLevels[i].levelOfDetail, UpdateTerrainChunk);
+				if(detailLevels[i].useForCollider) {
+					collisionLevelOfDetailMesh = levelOfDetailMeshes[i];
+				}
 			}
 			mapGenerator.RequestMapData(position, OnMapDataReceived);
 		}
@@ -138,6 +145,13 @@ public class EndlessTerrain : MonoBehaviour {
 						}
 					}
 
+					if(levelOfDetailIndex == 0) {
+						if(collisionLevelOfDetailMesh.hasMesh) {
+							meshCollider.sharedMesh = collisionLevelOfDetailMesh.mesh;
+						} else if(!collisionLevelOfDetailMesh.hasRequetstedMesh) {
+							collisionLevelOfDetailMesh.RequestMesh(mapData);
+						}
+					}
 					terrainChunksVisibleLastUpdate.Add(this);
 				}
 				SetVisible(visible);
@@ -182,5 +196,6 @@ public class EndlessTerrain : MonoBehaviour {
 	public struct LevelOfDetailInformation {
 		public int levelOfDetail;
 		public float visibleDistanceThreshold;
+		public bool useForCollider;
 	}
 }
