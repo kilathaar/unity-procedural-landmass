@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Threading;
@@ -8,27 +7,12 @@ public class MapGenerator : MonoBehaviour {
 	public enum DrawMode { NoiseMap, ColourMap, Mesh, FalloffMap };
 	public DrawMode drawMode;
 
-	public Noise.NormalizeMode normalizeMode;
-
-	public bool useFlatShading;
+	public TerrainData terrainData;
+	public NoiseData noiseData;
 
 	[Range(0, 6)]
 	public int editorLevelOfDetailPreview;
-	public float noiseScale;
 
-	[Range(1, 8)]
-	public int octaves;
-	[Range(0, 1)]
-	public float persistance;
-	public float lacunarity;
-
-	public int seed;
-	public Vector2 offset;
-
-	public bool useFalloffMap;
-
-	public float meshHeightMultiplier;
-	public AnimationCurve meshHeightCurve;
 
 	public bool autoUpdate;
 
@@ -40,8 +24,15 @@ public class MapGenerator : MonoBehaviour {
 	Queue<MapThreadInformation<MapData>> mapDataThreadInformationQueue = new Queue<MapThreadInformation<MapData>>();
 	Queue<MapThreadInformation<MeshData>> meshDataThreadInformationQueue = new Queue<MapThreadInformation<MeshData>>();
 
+
 	void Awake() {
 		falloffMap = FalloffGenerator.GenerateFalloffMap(mapChunkSize);
+	}
+
+	void OnValuesUpdated() {
+		if (!Application.isPlaying) {
+			DrawMapInEditor();
+		}
 	}
 
 	public static int mapChunkSize {
@@ -49,7 +40,7 @@ public class MapGenerator : MonoBehaviour {
 			if(instance == null) {
 				instance = FindObjectOfType<MapGenerator>();
 			}
-			if(instance.useFlatShading) {
+			if(instance.terrainData.useFlatShading) {
 				return 95;
 			} else {
 				return 239;
@@ -65,7 +56,7 @@ public class MapGenerator : MonoBehaviour {
 		} else if(drawMode == DrawMode.ColourMap) {
 			display.DrawTexture(TextureGenerator.TextureFromColourMap(mapData.colourMap, mapChunkSize, mapChunkSize));
 		} else if(drawMode == DrawMode.Mesh) {
-			display.DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, meshHeightMultiplier, meshHeightCurve, editorLevelOfDetailPreview, useFlatShading), TextureGenerator.TextureFromColourMap(mapData.colourMap, mapChunkSize, mapChunkSize));
+			display.DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, editorLevelOfDetailPreview, terrainData.useFlatShading), TextureGenerator.TextureFromColourMap(mapData.colourMap, mapChunkSize, mapChunkSize));
 		} else if(drawMode == DrawMode.FalloffMap) {
 			display.DrawTexture(TextureGenerator.TextureFromHeightMap(FalloffGenerator.GenerateFalloffMap(mapChunkSize)));
 		}
@@ -95,7 +86,7 @@ public class MapGenerator : MonoBehaviour {
 	}
 
 	void MeshDataThread(MapData mapData, int levelOfDetail, Action<MeshData> callback) {
-		MeshData meshData = MeshGenerator.GenerateTerrainMesh(mapData.heightMap, meshHeightMultiplier, meshHeightCurve, levelOfDetail, useFlatShading);
+		MeshData meshData = MeshGenerator.GenerateTerrainMesh(mapData.heightMap, terrainData.meshHeightMultiplier, terrainData.meshHeightCurve, levelOfDetail, terrainData.useFlatShading);
 		lock(meshDataThreadInformationQueue) {
 			meshDataThreadInformationQueue.Enqueue(new MapThreadInformation<MeshData>(callback, meshData));
 		}
@@ -119,13 +110,13 @@ public class MapGenerator : MonoBehaviour {
 
 	MapData GenerateMapData(Vector2 centre) {
 		// +2 för att kompensera för "border" (episod 12)
-		float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize + 2, mapChunkSize + 2, seed, noiseScale, octaves, persistance, lacunarity, centre + offset, normalizeMode);
+		float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize + 2, mapChunkSize + 2, noiseData.seed, noiseData.noiseScale, noiseData.octaves, noiseData.persistance, noiseData.lacunarity, centre + noiseData.offset, noiseData.normalizeMode);
 
 		Color[] colourMap = new Color[mapChunkSize * mapChunkSize];
 
 		for(int y = 0; y < mapChunkSize; y++) {
 			for(int x = 0; x < mapChunkSize; x++) {
-				if(useFalloffMap) {
+				if(terrainData.useFalloffMap) {
 					noiseMap[x, y] = Mathf.Clamp01(noiseMap[x, y] - falloffMap[x, y]);
 				}
 				float currentHeight = noiseMap[x, y];
@@ -142,11 +133,14 @@ public class MapGenerator : MonoBehaviour {
 	}
 
 	private void OnValidate() {
-		if(lacunarity < 1) {
-			lacunarity = 1;
+		// TODO: Denna kod genererar varningar, se https://forum.unity.com/threads/sendmessage-cannot-be-called-during-awake-checkconsistency-or-onvalidate-can-we-suppress.537265/
+		if(terrainData != null) {
+			terrainData.OnValuesUpdated -= OnValuesUpdated;
+			terrainData.OnValuesUpdated += OnValuesUpdated;
 		}
-		if(noiseScale <= 0.00085f) {
-			noiseScale = 0.00085f;
+		if(noiseData != null) {
+			noiseData.OnValuesUpdated -= OnValuesUpdated;
+			noiseData.OnValuesUpdated += OnValuesUpdated;
 		}
 		falloffMap = FalloffGenerator.GenerateFalloffMap(mapChunkSize);
 	}

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class EndlessTerrain : MonoBehaviour {
-
-	const float scale = 2f;
-
 	const float viewerMoveThresholdForChunkUpdate = 25f;
 	const float squareViewerMoveThresholdForChunkUpdate = viewerMoveThresholdForChunkUpdate * viewerMoveThresholdForChunkUpdate;
 
@@ -36,7 +31,7 @@ public class EndlessTerrain : MonoBehaviour {
 	}
 
 	void Update() {
-		viewerPosition = new Vector2(viewer.position.x, viewer.position.z) / scale;
+		viewerPosition = new Vector2(viewer.position.x, viewer.position.z) / mapGenerator.terrainData.uniformScale;
 		if((previousViewerPosition - viewerPosition).sqrMagnitude > squareViewerMoveThresholdForChunkUpdate) {
 			previousViewerPosition = viewerPosition;
 			UpdateVisibleChunks();
@@ -96,9 +91,9 @@ public class EndlessTerrain : MonoBehaviour {
 			meshFilter = meshObject.AddComponent<MeshFilter>();
 			meshRenderer.material = material;
 
-			meshObject.transform.position = positionV3 * scale;
+			meshObject.transform.position = positionV3 * mapGenerator.terrainData.uniformScale;
 			meshObject.transform.parent = parent;
-			meshObject.transform.localScale = Vector3.one * scale;
+			meshObject.transform.localScale = Vector3.one * mapGenerator.terrainData.uniformScale;
 			SetVisible(false);
 
 			levelOfDetailMeshes = new LevelOfDetailMesh[detailLevels.Length];
