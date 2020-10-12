@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0bfcda99feda5d4795b39740c8662f4, type: 3}
   m_Name: Default Texture
   m_EditorClassIdentifier: 
-  automaticUpdate: 0
+  automaticUpdate: 1
+  baseColours: []
