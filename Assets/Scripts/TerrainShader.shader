@@ -2,8 +2,8 @@
     Properties{
     }
 
-    SubShader {
-        Tags { "RenderType"="Opaque" }
+    SubShader{
+        Tags { "RenderType" = "Opaque" }
         LOD 200
 
         CGPROGRAM
@@ -12,6 +12,12 @@
 
         // Use shader model 3.0 target, to get nicer looking lighting
         #pragma target 3.0
+
+        const static int maxColourCount = 8;
+        
+        int baseColourCount;
+        float3 baseColours[maxColourCount];
+        float baseStartHeights[maxColourCount];
 
         float minHeight;
         float maxHeight;
@@ -26,8 +32,11 @@
 
         void surf (Input IN, inout SurfaceOutputStandard o) {
             float heightPercent = inverseLerp(minHeight, maxHeight, IN.worldPos.y);
-            o.Albedo = heightPercent;
-            //o.Albedo = float3(0.5, 0, 1);
+
+            for (int i = 0; i < baseColourCount; i++) {
+                float drawStrength = saturate(sign(heightPercent - baseStartHeights[i]));
+                o.Albedo = o.Albedo * (1 - drawStrength) + baseColours[i] * drawStrength;
+            }
         }
         ENDCG
     }
