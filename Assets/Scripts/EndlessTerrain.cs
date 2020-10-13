@@ -210,9 +210,9 @@ public class EndlessTerrain : MonoBehaviour {
 
 	[System.Serializable]
 	public struct LevelOfDetailInformation {
+		[Range(0, MeshGenerator.numberOfSupportedLevelOfDetails - 1)]
 		public int levelOfDetail;
 		public float visibleDistanceThreshold;
-		public bool useForCollider;
 
 		public float squareVisibleDistanceThreshold {
 			get {

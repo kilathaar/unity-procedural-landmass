@@ -13,7 +13,12 @@ public class MapGenerator : MonoBehaviour {
 
 	public Material terrainMaterial;
 
-	[Range(0, 6)]
+	[Range(0, MeshGenerator.numberOfSupportedChunkSizes - 1)]
+	public int chunkSizeIndex;
+	[Range(0, MeshGenerator.numberOfSupportedFlatshadedChunkSizes - 1)]
+	public int flatshadedChunkSizeIndex;
+
+	[Range(0, MeshGenerator.numberOfSupportedLevelOfDetails - 1)]
 	public int editorLevelOfDetailPreview;
 
 
@@ -42,9 +47,9 @@ public class MapGenerator : MonoBehaviour {
 	public int mapChunkSize {
 		get {
 			if(terrainData.useFlatShading) {
-				return 95;
+				return MeshGenerator.supportedFlatshadedChunkSizes[flatshadedChunkSizeIndex] - 1;
 			} else {
-				return 239;
+				return MeshGenerator.supportedChunkSizes[chunkSizeIndex] - 1;
 			}
 		}
 	}

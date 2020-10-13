@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class MeshGenerator {
+	public const int numberOfSupportedLevelOfDetails = 5;
+	public const int numberOfSupportedChunkSizes = 9;
+	public const int numberOfSupportedFlatshadedChunkSizes = 3;
+	public static readonly int[] supportedChunkSizes = { 48, 72, 96, 120, 144, 168, 192, 216, 240 };
+	public static readonly int[] supportedFlatshadedChunkSizes = { 48, 72, 96 };
 	public static MeshData GenerateTerrainMesh(float[,] heightMap, float heightMultiplier, AnimationCurve _heightCurve, int levelOfDetail, bool useFlatShading) {
 		AnimationCurve heightCurve = new AnimationCurve(_heightCurve.keys);
 
