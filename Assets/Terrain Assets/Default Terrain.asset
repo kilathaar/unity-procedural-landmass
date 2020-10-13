@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   automaticUpdate: 1
   uniformScale: 2.5
-  useFlatShading: 0
+  useFlatShading: 1
   useFalloffMap: 0
   meshHeightMultiplier: 40
   meshHeightCurve:
