@@ -86,7 +86,7 @@ public class MeshData {
 	}
 
 	public void AddVertex(Vector3 vertexPosition, Vector2 uv, int vertexIndex) {
-		if(vertexIndex < 0) { // Är det en borderVertex? (episod 12)
+		if(vertexIndex < 0) {
 			borderVertices[-vertexIndex - 1] = vertexPosition;
 		} else {
 			vertices[vertexIndex] = vertexPosition;
@@ -108,7 +108,6 @@ public class MeshData {
 	}
 
 	Vector3[] CalculateNormals() {
-
 		Vector3[] vertexNormals = new Vector3[vertices.Length];
 		int triangleCount = triangles.Length / 3;
 		for(int i = 0; i < triangleCount; i++) {

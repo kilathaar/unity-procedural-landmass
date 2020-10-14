@@ -1,13 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public static class Noise {
+	public enum NormalizeMode { Local, Global }
 
-	public enum NormalizeMode {
-		Local,
-		Global // minNoiseHeight & maxNoiseHeight kan skilja sig mellan olika "chunks" och vi gör en kvalificerad gissning
-	}
 	public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, NoiseSettings settings, Vector2 sampleCentre) {
 		float[,] noiseMap = new float[mapWidth, mapHeight];
 

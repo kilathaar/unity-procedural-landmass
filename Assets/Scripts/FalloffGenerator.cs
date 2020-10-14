@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public static class FalloffGenerator {
 
@@ -16,7 +14,6 @@ public static class FalloffGenerator {
 				map[i, j] = Evalute(value);
 			}
 		}
-
 		return map;
 	}
 
