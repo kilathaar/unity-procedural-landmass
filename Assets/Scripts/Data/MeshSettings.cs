@@ -15,10 +15,10 @@ public class MeshSettings : UpdatableData {
 	[Range(0, numberOfSupportedFlatshadedChunkSizes - 1)]
 	public int flatshadedChunkSizeIndex;
 
-	// Number of vertices per line of a mesh rendered at its highest resolution (level of detail == 0). INcludes the two extra vertices that are excluded from final mesh, but used for calculating normals.
+	// Number of vertices per line of a mesh rendered at its highest resolution (level of detail == 0). Includes the two extra vertices that are excluded from final mesh, but used for calculating normals.
 	public int numberOfVerticesPerLine {
 		get {
-			return supportedChunkSizes[useFlatShading ? flatshadedChunkSizeIndex : chunkSizeIndex] + 1;
+			return supportedChunkSizes[useFlatShading ? flatshadedChunkSizeIndex : chunkSizeIndex] + 5;
 		}
 	}
 
