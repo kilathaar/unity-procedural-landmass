@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MapGenerator : MonoBehaviour {
-	public enum DrawMode { NoiseMap, CooourMap };
+	public enum DrawMode { NoiseMap, ColourMap };
 	public DrawMode drawMode;
 
 	public int mapWidth;
@@ -43,7 +42,7 @@ public class MapGenerator : MonoBehaviour {
 
 		if(drawMode == DrawMode.NoiseMap) {
 			display.DrawTexture(TextureGenerator.TextureFromHeightMap(noiseMap));
-		} else if(drawMode == DrawMode.CooourMap) {
+		} else if(drawMode == DrawMode.ColourMap) {
 			display.DrawTexture(TextureGenerator.TextureFromColourMap(colourMap, mapWidth, mapHeight));
 		}
 	}
